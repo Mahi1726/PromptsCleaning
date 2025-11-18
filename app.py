@@ -45,35 +45,4 @@ if st.button("Process and Preview"):
                 # Keep the URL intact, put the serial number on the next line with NO space before the prompt text
                 prefix = content[:url_match.start()]
                 suffix = content[url_match.end():].lstrip()  # remove leading spaces so number joins directly to prompt text
-                new_content = prefix + url + "
-" + f"{idx}" + suffix
-            else:
-                # No URL: prefix number directly at start (no space)
-                new_content = f"{idx}{content}"
-            output_lines.append(new_content)
-
-        result = "\n\n".join(output_lines)
-        st.subheader("Preview")
-        st.code(result, language="text")
-
-        # Allow download
-        buf = StringIO()
-        buf.write(result)
-        buf.seek(0)
-        data_bytes = buf.getvalue().encode("utf-8")
-        st.download_button("Download formatted prompts (.txt)", data=data_bytes, file_name="formatted_prompts.txt", mime="text/plain")
-
-# Helpful example button
-if st.button("Load example (small)"):
-    example = (
-        "Part 1: https://cdn.discordapp.com/example1.jpg?abc Example prompt one\n"
-        "Part 2: Example prompt without url\n"
-        "Part 3: https://cdn.discordapp.com/example3.png More text after URL\n"
-    )
-    st.experimental_set_query_params()  # no-op to give user feedback
-    st.session_state['example_loaded'] = True
-    st.write("Example loaded below — click Process and Preview")
-    st.text_area("Paste your full prompt text here (the 'Part X:' list)", value=example, height=200)
-
-st.markdown("---")
-st.caption("Built to add the serial number (SNo) exactly as requested: number appended with NO SPACE after URL or at the very start when no URL exists.")
+                new_content = prefix + url + "\\n" + f"{idx}" + suffix
