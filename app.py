@@ -42,10 +42,11 @@ if st.button("Process and Preview"):
             url_match = re.search(r"https?://\S+", content)
             if url_match:
                 url = url_match.group(0)
-                # Build new URL with number directly appended (no space)
-                new_url = f"{url}{idx}"
-                # Replace only the first occurrence
-                new_content = content[:url_match.start()] + new_url + content[url_match.end():]
+                # Keep the URL intact, put the serial number on the next line with NO space before the prompt text
+                prefix = content[:url_match.start()]
+                suffix = content[url_match.end():].lstrip()  # remove leading spaces so number joins directly to prompt text
+                new_content = prefix + url + "
+" + f"{idx}" + suffix
             else:
                 # No URL: prefix number directly at start (no space)
                 new_content = f"{idx}{content}"
@@ -59,7 +60,8 @@ if st.button("Process and Preview"):
         buf = StringIO()
         buf.write(result)
         buf.seek(0)
-        st.download_button("Download formatted prompts (.txt)", data=buf, file_name="formatted_prompts.txt", mime="text/plain")
+        data_bytes = buf.getvalue().encode("utf-8")
+        st.download_button("Download formatted prompts (.txt)", data=data_bytes, file_name="formatted_prompts.txt", mime="text/plain")
 
 # Helpful example button
 if st.button("Load example (small)"):
